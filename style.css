@@ -65,3 +65,25 @@ body {
     align-items: center;
     font-size: 7rem;
 }
+
+.game-buttons {
+    display: flex;
+    gap: 2rem;
+}
+
+.game-buttons button {
+    padding: 1rem;
+    font-size: 1.5rem;
+    background-color: var(--main-color);
+    color: #fff;
+    border-radius: 0.5rem;
+    width: 10rem;
+}
+
+.game-buttons button:hover {
+    cursor: pointer;
+}
+
+.game-buttons button:active {
+    background-color: #663464;
+}

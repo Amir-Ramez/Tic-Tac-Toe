@@ -132,5 +132,32 @@ function GameManager(playerOne, playerTwo) {
         });
     };
 
-    return { markCell };
+    const reset = () => {
+        gameOver = false;
+        activePlayer = players[0];
+        document.querySelectorAll('.cell').forEach((cell) => {
+            cell.textContent = '';
+        });
+        Gameboard.initializeBoard();
+    };
+
+    return { markCell, reset };
 }
+
+let game = null;
+
+document.querySelector('.start-game').addEventListener('click', () => {
+    const p1Name = document.querySelector('#player-one-name').value.trim();
+    const p2Name = document.querySelector('#player-two-name').value.trim();
+
+    if (game) game.reset();
+
+    Gameboard.initializeBoard();
+    game = GameManager(p1Name || 'Player One', p2Name || 'Player Two');
+    game.markCell();
+});
+
+document.querySelector('.reset-game').addEventListener('click', () => {
+    if (game) game.reset();
+    document.querySelector('.players-details form').reset();
+});
