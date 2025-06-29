@@ -19,3 +19,118 @@ const Gameboard = (function () {
 
     return { getSize, getBoard, initializeBoard, markCell };
 })();
+
+function GameManager(playerOne, playerTwo) {
+    let gameOver = false;
+    const players = [
+        {
+            name: playerOne,
+            marker: 'X',
+        },
+        {
+            name: playerTwo,
+            marker: 'O',
+        },
+    ];
+
+    let activePlayer = players[0];
+
+    const getActivePlayer = () => activePlayer;
+
+    const switchActivePlayer = () => {
+        activePlayer = activePlayer === players[0] ? players[1] : players[0];
+    };
+
+    const playRound = (row, col) => {
+        if (gameOver) return;
+
+        Gameboard.markCell(row, col, getActivePlayer().marker);
+        const winner = checkWin();
+        if (winner) {
+            alert(`${winner.name} wins!`);
+            gameOver = true;
+            return;
+        }
+        switchActivePlayer();
+    };
+
+    const checkWin = () => {
+        const board = Gameboard.getBoard();
+        const lines = [
+            // rows
+            [
+                [0, 0],
+                [0, 1],
+                [0, 2],
+            ],
+            [
+                [1, 0],
+                [1, 1],
+                [1, 2],
+            ],
+            [
+                [2, 0],
+                [2, 1],
+                [2, 2],
+            ],
+
+            // cols
+            [
+                [0, 0],
+                [1, 0],
+                [2, 0],
+            ],
+            [
+                [0, 1],
+                [1, 1],
+                [2, 1],
+            ],
+            [
+                [0, 2],
+                [1, 2],
+                [2, 2],
+            ],
+
+            // diagonals
+            [
+                [0, 0],
+                [1, 1],
+                [2, 2],
+            ],
+            [
+                [0, 2],
+                [1, 1],
+                [2, 0],
+            ],
+        ];
+
+        for (const line of lines) {
+            const [a, b, c] = line;
+            const v1 = board[a[0]][a[1]];
+            if (
+                v1 !== '' &&
+                v1 === board[b[0]][b[1]] &&
+                v1 === board[c[0]][c[1]]
+            ) {
+                return players.find((player) => player.marker == v1);
+            }
+        }
+        return null;
+    };
+
+    const markCell = () => {
+        const cells = document.querySelectorAll('.cell');
+        cells.forEach((cell) => {
+            cell.addEventListener('click', () => {
+                if (cell.textContent !== '' || gameOver) return;
+
+                const row = Number(cell.dataset.row);
+                const col = Number(cell.dataset.col);
+                cell.textContent = getActivePlayer().marker;
+                playRound(row, col);
+            });
+        });
+    };
+
+    return { markCell };
+}
